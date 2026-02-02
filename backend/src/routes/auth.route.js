@@ -3,8 +3,10 @@ import { login, logout, signup, updateProfile } from "../controllers/auth.contro
 
 import { protectRoute } from "../middleware/auth.middleware.js";
 
-const router = express.Router();
+import { arcjetProtection } from "../middleware/arcjet.middleware.js";
 
+const router = express.Router();
+router.use(arcjetProtection);
 router.post("/signup", signup)
 
 router.post("/login", login)
