@@ -9,20 +9,20 @@ export const useAuthStore = create((set) => ({
   isLoggingIn: false,
 
   signup: async (data) => {
-  set({ isSigningUp: true }); // start loading
-  try {
-    const res = await axiosInstance.post("/auth/signup", data); // API call
-    set({ authUser: res.data }); // save the logged-in user
+    set({ isSigningUp: true }); // start loading
+    try {
+      const res = await axiosInstance.post("/auth/signup", data); // API call
+      set({ authUser: res.data }); // save the logged-in user
 
-    toast.success("Account created successfully!"); // success notification
-  } catch (error) {
-    toast.error(error?.response?.data?.message || "Signup failed"); // error notification
-  } finally {
-    set({ isSigningUp: false }); // stop loading
-  }
-},
+      toast.success("Account created successfully!"); // success notification
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Signup failed"); // error notification
+    } finally {
+      set({ isSigningUp: false }); // stop loading
+    }
+  },
 
- login: async (data) => {
+  login: async (data) => {
     set({ isLoggingIn: true });
     try {
       const res = await axiosInstance.post("/auth/login", data);
@@ -39,20 +39,30 @@ export const useAuthStore = create((set) => ({
   },
 
   logout: async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+
+      set({
+        authUser: null,
+        isCheckingAuth: false,
+      });
+
+      toast.success("Logged out successfully");
+    } catch (error) {
+      toast.error("Error logging out");
+    }
+  },
+
+  updateProfile: async (data) => {
   try {
-    await axiosInstance.post("/auth/logout");
-
-    set({
-      authUser: null,
-      isCheckingAuth: false,
-    });
-
-    toast.success("Logged out successfully");
+    const res = await axiosInstance.put("/auth/update-profile", data);
+    set({ authUser: res.data });
+    toast.success("Profile updated successfully");
   } catch (error) {
-    toast.error("Error logging out");
+    console.log("Error in update profile:", error);
+    toast.error(error?.response?.data?.message || "Profile update failed");
   }
 },
-
 
 
   checkAuth: async () => {
@@ -67,6 +77,3 @@ export const useAuthStore = create((set) => ({
     }
   },
 }));
-
-
-
