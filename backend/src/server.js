@@ -1,90 +1,49 @@
-// import express from "express";
-// import dotenv from "dotenv";
-// import cors from "cors";
-// import cookieParser from "cookie-parser";
-
-// import authRoutes from "./routes/auth.route.js";
-// import messageRoutes from "./routes/message.route.js";
-// import { connectDB } from "./lib/db.js";
-
-// dotenv.config();
-
-// const app = express();
-// const PORT = process.env.PORT || 3000;
-
-// // middleware
-// app.use(express.json());
-
-// const allowedOrigins = [
-//   "http://localhost:5173",
-//   "https://chatify-opal-one.vercel.app",
-// ];
-
-// app.use(
-//   cors({
-//     origin: allowedOrigins,
-//     credentials: true,
-//   })
-// );
-
-// app.use(cookieParser());
-
-// // routes
-// app.use("/api/auth", authRoutes);
-// app.use("/api/messages", messageRoutes);
-
-// // test route
-// app.get("/", (req, res) => {
-//   res.send("Chatify backend running 🚀");
-// });
-
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-//   connectDB();
-// });
-
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { v2 as cloudinary } from "cloudinary";
 
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
 
+// 🔥 1️⃣ LOAD ENV FIRST
 dotenv.config();
+
+// 🔥 2️⃣ CONFIGURE CLOUDINARY AFTER ENV
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 🔥 IMPORTANT: increase body size limit (FOR BASE64 IMAGE)
+// 🔥 3️⃣ BODY LIMIT (BASE64 IMAGE)
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5174", // ✅ add this (vite auto changes port)
-  "https://chatify-opal-one.vercel.app",
-];
-
+// 🔥 4️⃣ CORS
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://chatify-opal-one.vercel.app",
+    ],
     credentials: true,
   })
 );
 
 app.use(cookieParser());
 
-// routes
+// 🔥 5️⃣ ROUTES
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-// test route
-app.get("/", (req, res) => {
-  res.send("Chatify backend running 🚀");
-});
-
+// 🔥 6️⃣ START SERVER
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   connectDB();

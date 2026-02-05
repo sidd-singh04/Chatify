@@ -92,29 +92,48 @@ export const logout = (_, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    console.log("REQ.USER:", req.user); // 🔍 debug
+    // 1️⃣ auth middleware se user milna chahiye
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
     const { profilePic } = req.body;
+
+    // 2️⃣ validation
     if (!profilePic) {
       return res.status(400).json({ message: "Profile Pic is required" });
     }
 
-    const userId = req.user._id;
-
+    // 3️⃣ upload to cloudinary (base64 supported)
     const uploadResponse = await cloudinary.uploader.upload(profilePic, {
       folder: "chatify/profile",
+      resource_type: "image",
     });
 
+    if (!uploadResponse?.secure_url) {
+      return res.status(500).json({ message: "Image upload failed" });
+    }
+
+    // 4️⃣ update DB
     const updatedUser = await User.findByIdAndUpdate(
-      userId,
+      req.user._id,
       { profilePic: uploadResponse.secure_url },
       { new: true }
     ).select("-password");
 
-    res.status(200).json(updatedUser);
+    // 5️⃣ safety check
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // 6️⃣ send updated user
+    return res.status(200).json(updatedUser);
+
   } catch (error) {
-    console.log("Error in updateProfile:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("❌ Update Profile Error:", error);
+
+    return res.status(500).json({
+      message: error.message || "Internal Server Error",
+    });
   }
 };
-
