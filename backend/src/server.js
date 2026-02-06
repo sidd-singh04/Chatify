@@ -7,6 +7,9 @@ import { v2 as cloudinary } from "cloudinary";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
+import { app, server } from "./lib/socket.js";
+
+
 
 // 🔥 1️⃣ LOAD ENV FIRST
 dotenv.config();
@@ -18,7 +21,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const app = express();
 const PORT = process.env.PORT || 3000;
 
 // 🔥 3️⃣ BODY LIMIT (BASE64 IMAGE)
@@ -44,7 +46,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 // 🔥 6️⃣ START SERVER
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   connectDB();
 });
