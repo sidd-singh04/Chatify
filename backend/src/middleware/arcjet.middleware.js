@@ -2,7 +2,7 @@ import aj from "../lib/arcjet.js";
 import { isSpoofedBot } from "@arcjet/inspect";
 
 export const arcjetProtection = async (req, res, next) => {
-  // 🔥 IMPORTANT: socket.io requests ko skip karo
+
   if (req.path.startsWith("/socket.io")) {
     return next();
   }

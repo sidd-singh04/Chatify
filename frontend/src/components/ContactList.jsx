@@ -22,7 +22,6 @@ function ContactList() {
           onClick={() => setSelectedUser(contact)}
         >
           <div className="flex items-center gap-3">
-            {/* ✅ ONLY THIS LINE FIXED */}
             <div
               className={`avatar ${
                 onlineUsers.includes(contact._id.toString())
