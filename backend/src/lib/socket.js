@@ -1,49 +1,3 @@
-// import { Server } from "socket.io";
-// import http from "http";
-// import express from "express";
-// import { socketAuthMiddleware } from "../middleware/socketAuthMiddleware.js";
-
-// const app = express();
-// const server = http.createServer(app);
-
-// const io = new Server(server, {
-//   cors: {
-//     origin: [
-//       "http://localhost:5173",
-//       "http://localhost:5174",
-//       "https://chatify-opal-one.vercel.app",
-//     ],
-//     credentials: true,
-//   },
-// });
-
-// io.use(socketAuthMiddleware);
-
-// export function getReceiverSocketId(userId){
-//     return userSocketMap[userId]
-// }
-
-// const userSocketMap = {};
-
-// io.on("connection", (socket) => {
-//   console.log("🟢 User connected:", socket.user.fullName);
-
-//   const userId = socket.userId;
-//   userSocketMap[userId] = socket.id;
-
-//   io.emit("getOnlineUsers", Object.keys(userSocketMap));
-
-//   socket.on("disconnect", () => {
-//     console.log("🔴 User disconnected:", socket.user.fullName);
-//     delete userSocketMap[userId];
-
-//     io.emit("getOnlineUsers", Object.keys(userSocketMap));
-//   });
-// });
-
-// export { io, app, server };
-
-
 import { Server } from "socket.io";
 import http from "http";
 import express from "express";
@@ -52,7 +6,6 @@ import { socketAuthMiddleware } from "../middleware/socketAuthMiddleware.js";
 const app = express();
 const server = http.createServer(app);
 
-// CORS and Socket.IO setup
 const io = new Server(server, {
   cors: {
     origin: [
@@ -64,45 +17,38 @@ const io = new Server(server, {
   },
 });
 
-// Apply authentication middleware
 io.use(socketAuthMiddleware);
 
-// Map to store online users and their socket IDs
+// ✅ userId -> array of socketIds (support multiple logins)
 const userSocketMap = {};
 
-// Helper function to get receiver socket
-export function getReceiverSocketId(userId) {
-  return userSocketMap[userId];
+// Returns array of socket IDs for a given user
+export function getReceiverSocketIds(userId) {
+  return userSocketMap[userId] || [];
 }
 
-// Socket connection
 io.on("connection", (socket) => {
-  const userId = socket.userId;
-  const userName = socket.user.fullName;
+  const userId = socket.user._id;
+  console.log("🟢 User connected:", socket.user.fullName);
 
-  // Save user's socket ID
-  userSocketMap[userId] = socket.id;
+  if (!userSocketMap[userId]) {
+    userSocketMap[userId] = [];
+  }
 
-  console.log("🟢 User connected:", userName);
+  // Add current socket
+  userSocketMap[userId].push(socket.id);
 
-  // Notify all clients of online users
+  // Broadcast online users
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-  // Listen for messages from client
-  socket.on("sendMessage", (message) => {
-    const receiverSocketId = userSocketMap[message.receiverId];
-    if (receiverSocketId) {
-      // Emit message only to the receiver
-      io.to(receiverSocketId).emit("newMessage", message);
-    }
-  });
-
-  // Handle disconnection
   socket.on("disconnect", () => {
-    console.log("🔴 User disconnected:", userName);
-    delete userSocketMap[userId];
-
-    // Update all clients about online users
+    console.log("🔴 User disconnected:", socket.user.fullName);
+    if (userSocketMap[userId]) {
+      userSocketMap[userId] = userSocketMap[userId].filter(id => id !== socket.id);
+      if (userSocketMap[userId].length === 0) {
+        delete userSocketMap[userId];
+      }
+    }
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
 });
