@@ -1,4 +1,4 @@
-# Real-Time Chat Application
+# Chatify App
 
 ## Description
 A full-stack real-time chat application built using the MERN stack. The app supports secure authentication, instant messaging, media sharing, and live user presence with a clean and modern UI.
