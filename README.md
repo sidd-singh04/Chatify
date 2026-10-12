@@ -169,11 +169,9 @@ Try the deployed application:
 ### 1. Clone the repository
 
 ```bash
-git clone <your-chatify-github-repository-url>
+git clone (https://github.com/sidd-singh04/Chatify)
 cd Chatify
 ```
-
-Replace the repository URL and directory name with your actual repository details.
 
 ### 2. Install dependencies
 
@@ -187,7 +185,6 @@ cd ../backend
 npm install
 ```
 
-Adjust the directory names if your repository uses a different structure.
 
 ### 3. Configure the application
 
@@ -195,17 +192,27 @@ Set up the required environment variables and external service credentials local
 
 Ensure that all necessary services are configured before starting the application.
 
-### 4. Run the application
+### 4. Run the Application
 
-Start the backend and frontend using the development scripts defined in their respective `package.json` files.
+Start the backend and frontend in two separate terminals.
 
-For example, if both use the `dev` script, run the following command in each directory:
+**Terminal 1: Start the Backend**
 
 ```bash
+cd backend
 npm run dev
 ```
 
-Run each service in its appropriate directory and terminal.
+**Terminal 2: Start the Frontend**
+
+```bash
+cd frontend
+npm run dev
+```
+
+Once both servers are running, open the local URL displayed in the frontend terminal to access Chatify.
+
+**Note:** Make sure `npm run dev` is configured in the `package.json` file of both directories. Adjust the folder names or commands if your project structure differs.
 
 ---
 
