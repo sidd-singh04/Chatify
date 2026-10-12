@@ -169,7 +169,7 @@ Try the deployed application:
 ### 1. Clone the repository
 
 ```bash
-git clone (https://github.com/sidd-singh04/Chatify)
+git clone https://github.com/sidd-singh04/Chatify.git
 cd Chatify
 ```
 
