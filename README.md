@@ -30,6 +30,16 @@ The application combines **React, Node.js, Express, MongoDB, Socket.IO, and Clou
   <img src="screenshots/signup-page.png" width="600" alt="Signup Page">
 </p>
 
+### 🟢 Online Presence
+
+* Real-time online/offline user status
+* Live presence updates through Socket.IO
+* Visibility into user availability within the application
+
+<p align="center">
+  <img src="screenshots/online-presence.png" width="650" alt="Online User Presence">
+</p>
+
 ### 💬 Real-Time Messaging
 
 * Instant one-to-one messaging using **Socket.IO**
@@ -40,16 +50,6 @@ The application combines **React, Node.js, Express, MongoDB, Socket.IO, and Clou
 
 <p align="center">
   <img src="screenshots/chat-interface.png" width="750" alt="Chatify Messaging Interface">
-</p>
-
-### 🟢 Online Presence
-
-* Real-time online/offline user status
-* Live presence updates through Socket.IO
-* Visibility into user availability within the application
-
-<p align="center">
-  <img src="screenshots/online-presence.png" width="650" alt="Online User Presence">
 </p>
 
 ### 🖼️ Image Sharing
