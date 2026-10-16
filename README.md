@@ -1,4 +1,4 @@
-# Chatify
+# 💬 Chatify
 
 > **A real-time messaging application built with the MERN stack, featuring instant messaging, online presence, sound notifications, and image sharing.**
 
